@@ -66,8 +66,8 @@ def getConfig(file):
         if (debug): print(Config.sections())
         Emoncfg = dict(Config['emoncms'])
         Emoncfg['enabled'] = str2bool(Emoncfg['enabled'])
-		Jeedomcfg = dict(Config['jeedom'])
-		Jeedomcfg['enabled'] = str2bool(Jeedomcfg['enabled'])
+        Jeedomcfg = dict(Config['jeedom'])
+        Jeedomcfg['enabled'] = str2bool(Jeedomcfg['enabled'])
         Sun2000cfg = dict(Config['sun2000'])
         Sun2000cfg['enabled'] = str2bool(Sun2000cfg['enabled'])
         Pvoutputcfg = dict(Config['pvoutput'])
@@ -260,25 +260,25 @@ def sendEmonCMS(data):
         if (senddata):
             res = sendGet(Emoncfg['url'], params)
             if (debug): printDebugHttp('EmonCMS', res)
-		return
+        return
     else:
         return
 
 def sendJeedom(data):
     global Jeedomcfg, debug, senddata
-	
+    
     if(Jeedomcfg['enabled']):
-		#Préparation des 4 jeux de données pour permettre le debug sans envoyer vers Jeedom
-		req1 = {"type": "variable", "apikey": Jeedomcfg['apikey'], "name": Jeedomcfg ['instantpowername'], "value": data['InstantPower']}
-		req2 = {"type": "variable", "apikey": Jeedomcfg['apikey'], "name": Jeedomcfg ['dailyenergyname'], "value": data['DailyEnergy']}
-		req3 = {"type": "variable", "apikey": Jeedomcfg['apikey'], "name": Jeedomcfg ['alltimeenergyname'], "value": data['AllTimeEnergy']}
-		req4 = {"type": "variable", "apikey": Jeedomcfg['apikey'], "name": Jeedomcfg ['internaltempname'], "value": data['InternalTemp']}
-		
+        #Préparation des 4 jeux de données pour permettre le debug sans envoyer vers Jeedom
+        req1 = {"type": "variable", "apikey": Jeedomcfg['apikey'], "name": Jeedomcfg ['instantpowername'], "value": data['InstantPower']}
+        req2 = {"type": "variable", "apikey": Jeedomcfg['apikey'], "name": Jeedomcfg ['dailyenergyname'], "value": data['DailyEnergy']}
+        req3 = {"type": "variable", "apikey": Jeedomcfg['apikey'], "name": Jeedomcfg ['alltimeenergyname'], "value": data['AllTimeEnergy']}
+        req4 = {"type": "variable", "apikey": Jeedomcfg['apikey'], "name": Jeedomcfg ['internaltempname'], "value": data['InternalTemp']}
+        
         if (debug): 
-		    printDebug('Jeedom instant power :', req1)
-		    printDebug('Jeedom daily energy :', req2)
-		    printDebug('Jeedom lifetime energy :', req3)
-		    printDebug('Jeedom internal temperature :', req4)
+            printDebug('Jeedom instant power :', req1)
+            printDebug('Jeedom daily energy :', req2)
+            printDebug('Jeedom lifetime energy :', req3)
+            printDebug('Jeedom internal temperature :', req4)
 
         if (senddata):
             res = sendGet(Jeedomcfg['url'], req1)
@@ -289,7 +289,7 @@ def sendJeedom(data):
             if (debug): printDebugHttp('Jeedom lifetime energy', res)
             res = sendGet(Jeedomcfg['url'], req4)
             if (debug): printDebugHttp('Jeedom internal temperature', res)
-		return
+        return
     else:
         return
 
@@ -345,12 +345,12 @@ def sendBDPV(data):
         return
     else:
         return
-		
+        
 def sendGet(url, parameters):
     return requests.get(url, params=parameters)
-	
+    
 def sendPost(url, myheaders, mydatas):
-	return requests.post(url, headers=myheaders, data=mydata)
+    return requests.post(url, headers=myheaders, data=mydata)
 
 # --------------------------------------------------------------------------- #
 # Functions - rate export to platforms limit management
@@ -381,6 +381,6 @@ if __name__ == "__main__":
         sendEmonCMS(data) #send data to EmonCMS
         sendPVOutput(data) #send to PVOutput
         sendBDPV(data) #send to BDPV
-		sendJeedom(data) #send to Jeedom
+        sendJeedom(data) #send to Jeedom
     else:
         print('Can do nothing, no config found')

@@ -4,6 +4,13 @@
 Ce script Python connecte un onduleur Huawei Sun2000 via [ModbusTCP](https://fr.wikipedia.org/wiki/Modbus) pour lire les différents registres de l'onduleur et récupérer les données. 
 Elles sont mise en forme et transmises à EmonCMS, Jeedom, PVOutput.org  et/ou BDPV.fr
 
+L'onduleur Sun2000 de Huawei propose une interface ModbusTCP. Il faut l'activer depuis l'application FusionSolar pour qu'elle soit accessible par tous. 
+Le [script](./src/) proposé connecte l'onduleur et récupère les données pour les envoyer sur EmonCMS, BDPV et/ou PVOutput. Le fichier de configuration permet de l'adapter à votre installation.
+
+Pour ceux qui souhaitent aller plus loin, la [doc Huawei](./doc/Huawei-Modbus) et [ModbusTool](https://github.com/ClassicDIY/ModbusTool) a bien servi pour vérifier la lecture correcte des données via le script Python.
+
+__Attention, la partie Jeedom n'est pas testée__
+
 
 ## Prérequis
 - Python 3.10+
