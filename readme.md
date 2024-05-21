@@ -45,6 +45,10 @@ Copiez le fichier `sun2000_modbus.py` et `sun2000-sample.conf` dans votre dossie
 ## Le fichier de configuration
 Le fichier de configuration se personnalise de la manière suivante
 
+La partie __general__ permet de 
+- `modbusdebug` : active le debug de la bibliothèque Modbus
+- `debug` : active le renvoi des données lues et du dialogue avec les plateformes
+- `senddata` : active l'envoi réel des données (pour toutes les plateformes
 ````ini
 [general]
 #Manage debug level
@@ -53,11 +57,11 @@ debug = True
 senddata = False
 ````
 
-La partie __general__ permet de 
-- `modbusdebug` : active le debug de la bibliothèque Modbus
-- `debug` : active le renvoi des données lues et du dialogue avec les plateformes
-- `senddata` : active l'envoi réel des données (pour toutes les plateformes
-
+La partie __emoncms__ se personnalise avec:
+- Activation ou non de cette partie
+- L'adresse du serveur Emoncms (IP ou nom de domaine, http ou https)
+- La clef d'API de votre compte
+- Le nom du node sur lequel poster les données
 ````ini
 [emoncms]
 enabled = True
@@ -67,12 +71,14 @@ apikey = your-api-key
 nodename = your-node-name
 ````
 
-La partie __emoncms__ se personnalise avec:
+La partie __jeedom__ se personnalise avec:
 - Activation ou non de cette partie
-- L'adresse du serveur Emoncms (IP ou nom de domaine, http ou https)
+- L'adresse du serveur Jeedom (IP ou nom de domaine, http ou https)
 - La clef d'API de votre compte
-- Le nom du node sur lequel poster les données
-
+- Le nom de la variable _Puissance Instantannée_
+- Le nom de la variable _Energie du jour_
+- Le nom de la variable _Energie depuis démarrage_
+- Le nom de la variable _Température interne_
 ````ini
 [jeedom]
 enabled = False
@@ -84,15 +90,11 @@ alltimeenergyname = your-variable-name
 internaltempname = your-variable-name
 ````
 
-La partie __jeedom__ se personnalise avec:
+La partie __PVOutput.org__
 - Activation ou non de cette partie
-- L'adresse du serveur Jeedom (IP ou nom de domaine, http ou https)
-- La clef d'API de votre compte
-- Le nom de la variable _Puissance Instantannée_
-- Le nom de la variable _Energie du jour_
-- Le nom de la variable _Energie depuis démarrage_
-- Le nom de la variable _Température interne_
-
+- votre clef d'API pour poster les données
+- l'ID du site déclaré dans PVOutput
+- Le nombre d'envoi par heure en fonction de la souscription ou non
 ````ini
 [pvoutput]
 enabled = True
@@ -105,12 +107,11 @@ hitsperhour = 60
 nextapicall_timestamp = 0
 ````
 
-La partie __PVOutput.org__
+La partie __BDPV__
 - Activation ou non de cette partie
-- votre clef d'API pour poster les données
-- l'ID du site déclaré dans PVOutput
-- Le nombre d'envoi par heure en fonction de la souscription ou non
-
+- Votre nom d'utilisateur
+- Votre clef d'API
+- L'heure à laquelle envoyer l'index une fois par jour - exprimé en secondes depuis minuit
 ````ini
 [bdpv]
 enabled = True
@@ -126,12 +127,7 @@ dailyhour = 7200
 nextapicall_timestamp = 0
 ````
 
-La partie __BDPV__
-- Activation ou non de cette partie
-- Votre nom d'utilisateur
-- Votre clef d'API
-- L'heure à laquelle envoyer l'index une fois par jour - exprimé en secondes depuis minuit
-
+La partie __sun2000___ se personnalise avec son adresse IP uniquement. Si vous le désactivez (`enabled = False`) des données nulles seront envoyées.
 ````ini
 [sun2000]
 enabled = True
@@ -167,9 +163,6 @@ efficiency_ratio = 100
 devicestatus_index = 20
 devicestatus_ratio = 1
 ````
-
-La partie __sun2000___ se personnalise avec son adresse IP uniquement. Si vous le désactivez (`enabled = False`) des données nulles seront envoyées.
-
 
 Sauvegardez ce fichier sous le nom `sun2000.conf` à coté du script. 
 
