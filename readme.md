@@ -1,5 +1,5 @@
 
-# Sun2000Modbus
+# Sun2000 Modbus
 
 Ce script Python connecte un onduleur Huawei Sun2000 via [ModbusTCP](https://fr.wikipedia.org/wiki/Modbus) pour lire les différents registres de l'onduleur et récupérer les données. 
 Elles sont mise en forme et transmises à EmonCMS, Jeedom, PVOutput.org  et/ou BDPV.fr
@@ -43,13 +43,46 @@ sudo pip install pymodbus
 Copiez le fichier `sun2000_modbus.py` et `sun2000-sample.conf` dans votre dossier `/home/<user>`
 
 ## Le fichier de configuration
-La partie général permet de configurer le niveau de débug. A minima, pour commencer le niveau `debug = True` et `senddata = False` permet de s'assurer que les données sont correctement récupérées et mise en forme. Pour activer la transmission, passez `senddata = True`.
+Le fichier de configuration se personnalise de la manière suivante
+
+````ini
+[general]
+#Manage debug level
+modbusdebug = False
+debug = True
+senddata = False
+````
+
+La partie __general__ permet de 
+- `modbusdebug` : active le debug de la bibliothèque Modbus
+- `debug` : active le renvoi des données lues et du dialogue avec les plateformes
+- `senddata` : active l'envoi réel des données (pour toutes les plateformes
+
+````ini
+[emoncms]
+enabled = True
+#set your EmonCMS address, api key, nodename, input labels
+url = http://127.0.0.1/input/post
+apikey = your-api-key
+nodename = your-node-name
+````
 
 La partie __emoncms__ se personnalise avec:
 - Activation ou non de cette partie
 - L'adresse du serveur Emoncms (IP ou nom de domaine, http ou https)
 - La clef d'API de votre compte
 - Le nom du node sur lequel poster les données
+
+````ini
+[jeedom]
+enabled = False
+url = http://127.0.0.1/core/api/jeeApi.php
+apikey = your-api-key
+instantpowername = your-variable-name
+dailyenergyname = your-variable-name
+alltimeenergyname = your-variable-name
+internaltempname = your-variable-name
+````
 
 La partie __jeedom__ se personnalise avec:
 - Activation ou non de cette partie
@@ -60,46 +93,7 @@ La partie __jeedom__ se personnalise avec:
 - Le nom de la variable _Energie depuis démarrage_
 - Le nom de la variable _Température interne_
 
-La partie __PVOutput.org__
-- Activation ou non de cette partie
-- votre clef d'API pour poster les données
-- l'ID du site déclaré dans PVOutput
-- Le nombre d'envoi par heure en fonction de la souscription ou non
-
-La partie __BDPV__
-- Activation ou non de cette partie
-- Votre nom d'utilisateur
-- Votre clef d'API
-- L'heure à laquelle envoyer l'index une fois par jour - exprimé en secondes depuis minuit
-
-Pour le sun2000, seule son adresse IP est nécessaire normalement. Si vous le désactivez (`enabled = False`) des données nulles seront envoyées.
-
-Sauvegardez ce fichier sous le nom `sun2000.conf` à coté du script. 
-
-
 ````ini
-[general]
-#Manage debug level
-modbusdebug = False
-debug = True
-senddata = False
-
-[emoncms]
-enabled = True
-#set your EmonCMS address, api key, nodename, input labels
-url = http://127.0.0.1/input/post
-apikey = your-api-key
-nodename = your-node-name
-
-[jeedom]
-enabled = False
-url = http://127.0.0.1/core/api/jeeApi.php
-apikey = your-api-key
-instantpowername = your-variable-name
-dailyenergyname = your-variable-name
-alltimeenergyname = your-variable-name
-internaltempname = your-variable-name
-
 [pvoutput]
 enabled = True
 url = https://pvoutput.org/service/r2/addstatus.jsp
@@ -109,7 +103,15 @@ siteid = site-id-interger
 hitsperhour = 60
 #used to manage next update according to above parameter - updates after each call
 nextapicall_timestamp = 0
+````
 
+La partie __PVOutput.org__
+- Activation ou non de cette partie
+- votre clef d'API pour poster les données
+- l'ID du site déclaré dans PVOutput
+- Le nombre d'envoi par heure en fonction de la souscription ou non
+
+````ini
 [bdpv]
 enabled = True
 url = https://www.bdpv.fr/webservice/majProd/expeditionProd_v3.php
@@ -122,7 +124,15 @@ typereleve = onduleur
 dailyhour = 7200
 #used to manage next update according to above parameter - updates after each call
 nextapicall_timestamp = 0
+````
 
+La partie __BDPV__
+- Activation ou non de cette partie
+- Votre nom d'utilisateur
+- Votre clef d'API
+- L'heure à laquelle envoyer l'index une fois par jour - exprimé en secondes depuis minuit
+
+````ini
 [sun2000]
 enabled = True
 #Set your Sun2000 IP address
@@ -156,8 +166,12 @@ efficiency_index = 17
 efficiency_ratio = 100
 devicestatus_index = 20
 devicestatus_ratio = 1
-
 ````
+
+La partie __sun2000___ se personnalise avec son adresse IP uniquement. Si vous le désactivez (`enabled = False`) des données nulles seront envoyées.
+
+
+Sauvegardez ce fichier sous le nom `sun2000.conf` à coté du script. 
 
 
 ## Fonctionnement
