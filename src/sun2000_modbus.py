@@ -1,6 +1,6 @@
 
 #
-# This send data Huawei Sun2000 to emonCMS, PVOutput.org and/or bdpv.fr
+# This send data Huawei Sun2000 to emonCMS, Jeedom, PVOutput.org and/or bdpv.fr
 #  
 # coded by: Emmanuel Havet
 
@@ -79,10 +79,11 @@ def getConfig(file):
         senddata = Config['general'].getboolean('senddata')
         
         if (debug):
-            print(f'Emoncfg: {Emoncfg}')
-            print(f'Sun2000cfg: {Sun2000cfg}')
-            print(f'Pvoutputcfg: {Pvoutputcfg}')
-            print(f'ModbusDebug: {ModbusDebug}')
+            printDebug('EmonCfg', Emoncfg)
+            printDebug('JeedomCfg', Jeedomcfg)
+            printDebug('Sun2000Cfg', Sun2000cfg)
+            printDebug('PVOutputcfg', Pvoutputcfg)
+            printDebug('BdpvCfg', Bdpvcfg)
      
         return True
     else:
@@ -139,7 +140,8 @@ def getSun2000Data():
               }
 
     else:
-        return dict(InstantPower=0, InternalTemp=0, AllTimeEnergy=0, DailyEnergy=0)
+        #Return test data without connecting inverter
+        return dict(InstantPower=99.0, InternalTemp=25.0, AllTimeEnergy=4218.73, DailyEnergy=20.47, VoltageL1=237.0, VoltageL2=237.0,VoltageL3=237.0,CurrentL1=12.0,CurrentL2=12.0,CurrentL3=12.0,ActivePower=99.0, GridFrequency=50.01, Efficiency=99.0, DeviceStatusCode=0xa000)
         
 # --------------------------------------------------------------------------- #
 # Functions - registers manipulation
@@ -234,10 +236,10 @@ def remapKeys(data, remap, allkeys = False):
     
 def printDebugHttp (sentto, requestObject):
     print(f'{sentto} data sent: {requestObject}')
-    print(f'response: {requestObject.json()}')
+    print(f'response: {requestObject.json()}\n')
 
 def printDebug(message, data):
-    print(f'{message}: {data}')
+    print(f'{message}: {data}\n')
        
     
 # --------------------------------------------------------------------------- #
@@ -254,7 +256,7 @@ def sendEmonCMS(data):
         data = remapKeys(data, emonlabels, True)
         data.pop('DeviceStatusCode') #hex not managed by EmonCMS
         
-        if (debug): printDebug('Emon Data: ', data)
+        if (debug): printDebug('Emon Data', data)
 
         params = dict(node=Emoncfg['nodename'], fulljson=json.dumps(data), apikey=Emoncfg['apikey'])
         if (senddata):
@@ -275,10 +277,10 @@ def sendJeedom(data):
         req4 = {"type": "variable", "apikey": Jeedomcfg['apikey'], "name": Jeedomcfg ['internaltempname'], "value": data['InternalTemp']}
         
         if (debug): 
-            printDebug('Jeedom instant power :', req1)
-            printDebug('Jeedom daily energy :', req2)
-            printDebug('Jeedom lifetime energy :', req3)
-            printDebug('Jeedom internal temperature :', req4)
+            printDebug('Jeedom instant power', req1)
+            printDebug('Jeedom daily energy', req2)
+            printDebug('Jeedom lifetime energy', req3)
+            printDebug('Jeedom internal temperature', req4)
 
         if (senddata):
             res = sendGet(Jeedomcfg['url'], req1)
@@ -307,7 +309,7 @@ def sendPVOutput(data):
         pvoutputdata['v1'] = int(pvoutputdata['v1']*1000) #From kWh to Wh
         pvoutputdata['v2'] = int(pvoutputdata['v2'])
         pvoutputdata['c1'] = 2
-        if (debug): printDebug('PVOuptut Data: ', pvoutputdata)
+        if (debug): printDebug('PVOuptut Data', pvoutputdata)
     
         headers = {
             "X-Pvoutput-Apikey": Pvoutputcfg['apikey'],
@@ -336,7 +338,7 @@ def sendBDPV(data):
         bdpvoutputdata['typeReleve'] = Bdpvcfg['typereleve']
         bdpvoutputdata['index'] = int(bdpvoutputdata['index'] * 1000) #From kWh to Wh
     
-        if (debug): printDebug('BDPV Data: ', bdpvoutputdata)
+        if (debug): printDebug('BDPV Data', bdpvoutputdata)
         
         if (senddata):
             res = sendGet(Bdpvcfg['url'], bdpvoutputdata)
@@ -349,7 +351,7 @@ def sendBDPV(data):
 def sendGet(url, parameters):
     return requests.get(url, params=parameters)
     
-def sendPost(url, myheaders, mydatas):
+def sendPost(url, myheaders, mydata):
     return requests.post(url, headers=myheaders, data=mydata)
 
 # --------------------------------------------------------------------------- #
@@ -377,7 +379,7 @@ def setNextBDPVAllowedTime():
 if __name__ == "__main__":
     if(getConfig(ConfFile)):  
         data = getSun2000Data()
-        if (debug): printDebug('Inverter data: ' data)
+        if (debug): printDebug('Inverter data', data)
         sendEmonCMS(data) #send data to EmonCMS
         sendPVOutput(data) #send to PVOutput
         sendBDPV(data) #send to BDPV
