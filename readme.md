@@ -7,9 +7,11 @@ Elles sont mise en forme et transmises à EmonCMS, Jeedom, PVOutput.org  et/ou B
 L'onduleur Sun2000 de Huawei propose une interface ModbusTCP. Il faut [l'activer](https://support.huawei.com/enterprise/en/doc/EDOC1100358764/1cdbf0bb/how-do-i-set-the-modbus-tcp-parameter) depuis l'application FusionSolar pour qu'elle soit accessible par tous. 
 Le fichier de configuration permet de l'adapter à votre installation.
 
-Pour ceux qui souhaitent aller plus loin, la [doc Huawei](./doc/Huawei-Modbus) et [ModbusTool](https://github.com/ClassicDIY/ModbusTool) a bien servi pour vérifier la lecture correcte des données via le script Python.
+Pour ceux qui souhaitent aller plus loin, la [doc Huawei](./doc/Huawei-Modbus) et [ModbusTool](https://github.com/ClassicDIY/ModbusTool) a bien servi pour vérifier la lecture correcte des données via le script Python.+
 
 __Attention, la partie Jeedom n'est pas testée__
+
+[![Buy me a coffee](./res/default-yellow.png)](https://www.buymeacoffee.com/ju9hJ8RqGk)
 
 
 ## Prérequis
@@ -217,5 +219,6 @@ C'est terminé, les données arrivent toutes les 15 secondes.
 ## A faire
 - Améliorer le script en diminuant les appels `Global`
 - Mieux utiliser la variable `Config` pour en faire un seul élément
+
 
 
